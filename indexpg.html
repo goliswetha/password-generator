@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: lightcyan;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+        }
+
+        button {
+            background-color: lightgreen;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: lightgreen;
+        }
+    </style>
+    <title>Password Generator</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Password Generator</h2>
+        <form id="passwordForm">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" required>
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" required>
+            
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" required>
+            
+            <button type="button" onclick="generatePassword()">Generate Password</button>
+        </form>
+
+        <script>
+            function generatePassword() {
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const dob = document.getElementById('dob').value;
+
+                // Generate password with specified format
+                const password = generateFormattedPassword(firstName, lastName, dob);
+
+                // Redirect to password display page with the generated password as a query parameter
+                window.location.href = `password.html?password=${encodeURIComponent(password)}`;
+            }
+
+            function generateFormattedPassword(firstName, lastName, dob) {
+                // Randomly select a substring of length 5 from the first and last names
+                const nameSubstring = randomSubstring(firstName + lastName, 5);
+
+                // Randomly select one special character from the variable
+                const specialCharacters = '!@#$%^&*()_+';
+                const randomSpecialCharacter = randomCharacter(specialCharacters);
+
+                // Randomly select exactly two digits from the date of birth
+                const dobDigits = randomDigits(extractDigits(dob), 2);
+
+                // Combine the components to generate the password
+                const password = nameSubstring + randomSpecialCharacter + dobDigits;
+
+                // If the password is longer than 8 characters, truncate it
+                return password.slice(0, 8);
+            }
+
+            function extractDigits(text) {
+                // Extract digits from the given text
+                return text.replace(/\D/g, '');
+            }
+
+            function randomSubstring(text, length) {
+                // Randomly select a substring of the specified length
+                const startIndex = Math.floor(Math.random() * (text.length - length + 1));
+                return text.substr(startIndex, length);
+            }
+
+            function randomCharacter(text) {
+                // Randomly select one character from the given text
+                const randomIndex = Math.floor(Math.random() * text.length);
+                return text.charAt(randomIndex);
+            }
+
+            function randomDigits(text, count) {
+                // Randomly select exactly count digits from the given text
+                const digits = text.replace(/\D/g, '');
+                const selectedDigits = randomSubstring(digits, count);
+                return selectedDigits.padEnd(count, '0'); // Ensure exactly count digits
+            }
+        </script>
+    </div>
+</body>
+</html>
